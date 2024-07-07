@@ -1,0 +1,7 @@
+[package]
+name = "surql"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+surrealdb = { version = "1.5.3", default-features = false }
