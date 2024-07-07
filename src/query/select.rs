@@ -33,6 +33,12 @@ impl SelectStatement {
         Self::default()
     }
 
+    /// Add an asterisk to the select expression list.
+    pub fn all(&mut self) -> &mut Self {
+        self.expr.0.push(Field::All);
+        self
+    }
+
     /// Add an expression to the select expression list.
     pub fn expr<T>(&mut self, expr: T) -> &mut Self
     where
