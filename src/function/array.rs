@@ -45,6 +45,323 @@ pub enum ArrayFunction {
     Union(Value, Value),
 }
 
+impl ArrayFunction {
+    pub fn add<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Add(array.into(), value.into())
+    }
+
+    pub fn all<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::All(array.into())
+    }
+
+    pub fn any<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Any(array.into())
+    }
+
+    pub fn at<A>(array: A, index: usize) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::At(array.into(), index)
+    }
+
+    pub fn append<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Append(array.into(), value.into())
+    }
+
+    pub fn boolean_and<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::BooleanAnd(l.into(), r.into())
+    }
+
+    pub fn boolean_or<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::BooleanOr(l.into(), r.into())
+    }
+
+    pub fn boolean_xor<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::BooleanXor(l.into(), r.into())
+    }
+
+    pub fn boolean_not<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::BooleanNot(array.into())
+    }
+
+    pub fn combine<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Combine(l.into(), r.into())
+    }
+
+    pub fn complement<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Complement(l.into(), r.into())
+    }
+
+    pub fn clump<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Clump(l.into(), r.into())
+    }
+
+    pub fn concat<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Concat(l.into(), r.into())
+    }
+
+    pub fn difference<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Difference(l.into(), r.into())
+    }
+
+    pub fn distinct<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Distinct(array.into())
+    }
+
+    pub fn find_index<A>(array: A, index: usize) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::FindIndex(array.into(), index)
+    }
+
+    pub fn filter_index<A>(array: A, index: usize) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::FilterIndex(array.into(), index)
+    }
+
+    pub fn first<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::First(array.into())
+    }
+
+    pub fn flatten<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Flatten(array.into())
+    }
+
+    pub fn group<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Group(array.into())
+    }
+
+    pub fn insert<A, V>(array: A, value: V, index: usize) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Insert(array.into(), value.into(), index)
+    }
+
+    pub fn intersect<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Intersect(l.into(), r.into())
+    }
+
+    pub fn join<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<String>,
+    {
+        Self::Join(array.into(), value.into())
+    }
+
+    pub fn last<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Last(array.into())
+    }
+
+    pub fn len<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Len(array.into())
+    }
+
+    pub fn logical_and<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::LogicalAnd(l.into(), r.into())
+    }
+
+    pub fn logical_or<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::LogicalOr(l.into(), r.into())
+    }
+
+    pub fn logical_xor<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::LogicalXor(l.into(), r.into())
+    }
+
+    pub fn max<A, F>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Max(array.into())
+    }
+
+    pub fn matches<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Matches(array.into(), value.into())
+    }
+
+    pub fn min<A, F>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Min(array.into())
+    }
+
+    pub fn pop<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Pop(array.into())
+    }
+
+    pub fn prepend<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Prepend(array.into(), value.into())
+    }
+
+    pub fn push<A, V>(array: A, value: V) -> Self
+    where
+        A: Into<Value>,
+        V: Into<Value>,
+    {
+        Self::Push(array.into(), value.into())
+    }
+
+    pub fn remove<A>(array: A, index: usize) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Remove(array.into(), index)
+    }
+
+    pub fn reverse<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Reverse(array.into())
+    }
+
+    pub fn shuffle<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Shuffle(array.into())
+    }
+
+    pub fn sort_asc<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::SortAsc(array.into())
+    }
+
+    pub fn sort_desc<A>(array: A) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::SortDesc(array.into())
+    }
+
+    pub fn slice<A>(array: A, start: usize, end: usize) -> Self
+    where
+        A: Into<Value>,
+    {
+        Self::Slice(array.into(), start, end)
+    }
+
+    pub fn transpose<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Transpose(l.into(), r.into())
+    }
+
+    pub fn union<L, R>(l: L, r: R) -> Self
+    where
+        L: Into<Value>,
+        R: Into<Value>,
+    {
+        Self::Union(l.into(), r.into())
+    }
+}
+
 impl From<ArrayFunction> for Function {
     fn from(value: ArrayFunction) -> Self {
         use ArrayFunction::*;
