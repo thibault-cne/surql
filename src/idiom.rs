@@ -1,25 +1,4 @@
-use surrealdb::sql::Part;
-
-#[derive(Clone, Debug, Default)]
-pub struct Idioms(Vec<Idiom>);
-
-impl From<Vec<Idiom>> for Idioms {
-    fn from(v: Vec<Idiom>) -> Self {
-        Self(v)
-    }
-}
-
-impl From<&[Idiom]> for Idioms {
-    fn from(v: &[Idiom]) -> Self {
-        Self(v.to_vec())
-    }
-}
-
-impl From<Idioms> for surrealdb::sql::Idioms {
-    fn from(value: Idioms) -> Self {
-        Self(value.0.into_iter().map(Into::into).collect())
-    }
-}
+use surrealdb::sql::{Part, Value};
 
 #[derive(Clone, Debug, Default)]
 pub struct Idiom(Vec<Part>);
@@ -64,5 +43,11 @@ impl From<Part> for Idiom {
 impl From<Idiom> for surrealdb::sql::Idiom {
     fn from(value: Idiom) -> Self {
         Self(value.0)
+    }
+}
+
+impl From<Idiom> for Value {
+    fn from(value: Idiom) -> Self {
+        Self::Idiom(value.into())
     }
 }

@@ -46,6 +46,14 @@ impl Graph {
         self
     }
 
+    pub fn exprs<T>(&mut self, exprs: T) -> &mut Self
+    where
+        T: Into<Fields>,
+    {
+        self.expr = exprs.into();
+        self
+    }
+
     pub fn what<T>(&mut self, what: T) -> &mut Self
     where
         T: Into<Table>,
