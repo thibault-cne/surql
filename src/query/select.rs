@@ -146,11 +146,11 @@ impl SelectStatement {
 
     pub fn fetch<T>(&mut self, fetch: T) -> &mut Self
     where
-        T: Into<Fetch>,
+        T: Into<surrealdb::sql::Idiom>,
     {
         match &mut self.fetch {
-            Some(fetchs) => fetchs.0.push(fetch.into()),
-            None => self.fetch = Some(Fetchs(vec![fetch.into()])),
+            Some(fetchs) => fetchs.0.push(Fetch(fetch.into())),
+            None => self.fetch = Some(Fetchs(vec![Fetch(fetch.into())])),
         }
         self
     }
