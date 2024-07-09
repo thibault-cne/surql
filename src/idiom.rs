@@ -1,4 +1,6 @@
-use surrealdb::sql::{Part, Value};
+use surrealdb::sql::{idiom, Part, Value};
+
+use crate::error::Result;
 
 #[derive(Clone, Debug, Default)]
 pub struct Idiom(Vec<Part>);
@@ -14,6 +16,22 @@ impl Idiom {
     {
         self.0.push(part.into());
         self
+    }
+
+    pub fn parse<'a, S>(s: S) -> Result<Self>
+    where
+        S: Into<&'a str>,
+    {
+        let idiom = idiom(s.into())?;
+        Ok(Self(idiom.0))
+    }
+
+    pub fn parse_unchecked<'a, S>(s: S) -> Self
+    where
+        S: Into<&'a str>,
+    {
+        let idiom = idiom(s.into()).expect("Idiom::parse_unchecked");
+        Self(idiom.0)
     }
 }
 

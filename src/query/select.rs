@@ -1,4 +1,3 @@
-use surrealdb::syn::idiom;
 use surrealdb::{
     opt::IntoQuery,
     sql::{
@@ -7,7 +6,6 @@ use surrealdb::{
     },
 };
 
-use crate::error::Result;
 use crate::idiom::Idiom;
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -44,17 +42,15 @@ impl SelectStatement {
     }
 
     /// Add an expression to the select expression list.
-    pub fn expr<'a, T>(&mut self, expr: T) -> Result<&mut Self>
+    pub fn expr<T>(&mut self, expr: T) -> &mut Self
     where
-        T: Into<&'a str>,
+        T: Into<Value>,
     {
-        let idiom = idiom(expr.into())?;
-
         self.expr.0.push(Field::Single {
-            expr: idiom.into(),
+            expr: expr.into(),
             alias: None,
         });
-        Ok(self)
+        self
     }
 
     pub fn expr_as<T, U>(&mut self, expr: T, alias: U) -> &mut Self
@@ -227,10 +223,10 @@ mod tests {
     use crate::expression::Expression;
 
     #[test]
-    fn simple_query() -> crate::error::Result<()> {
+    fn simple_query() {
         let query: surrealdb::sql::statements::SelectStatement = SelectStatement::new()
-            .expr("name")?
-            .expr("age")?
+            .expr("name")
+            .expr("age")
             .what("users")
             .to_owned()
             .into();
@@ -239,15 +235,13 @@ mod tests {
             query.to_string(),
             "SELECT 'name', 'age' FROM 'users'".to_string()
         );
-
-        Ok(())
     }
 
     #[test]
-    fn where_clause() -> crate::error::Result<()> {
+    fn where_clause() {
         let query: surrealdb::sql::statements::SelectStatement = SelectStatement::new()
-            .expr("name")?
-            .expr("age")?
+            .expr("name")
+            .expr("age")
             .what("users")
             .cond(Expression::eq("name", "toto"))
             .cond(Expression::eq("age", 18))
@@ -256,9 +250,26 @@ mod tests {
 
         assert_eq!(
             query.to_string(),
-            "SELECT 'name', 'age' FROM 'users' WHERE 'name' = 'toto' AND 'age' = 18".to_string()
+            "SELECT 'name', 'age' FROM 'users' WHERE 'name' = 'toto' AND age = 18".to_string()
         );
+    }
 
-        Ok(())
+    #[test]
+    fn with_idiom() {
+        use crate::idiom::Idiom;
+
+        let query: surrealdb::sql::statements::SelectStatement = SelectStatement::new()
+            .expr(Idiom::parse_unchecked("name"))
+            .expr(Idiom::parse_unchecked("age"))
+            .what(Idiom::parse_unchecked("users"))
+            .cond(Expression::eq(Idiom::parse_unchecked("name"), "toto"))
+            .cond(Expression::eq(Idiom::parse_unchecked("age"), 18))
+            .to_owned()
+            .into();
+
+        assert_eq!(
+            query.to_string(),
+            "SELECT name, age FROM users WHERE name = 'toto' AND age = 18".to_string()
+        );
     }
 }
