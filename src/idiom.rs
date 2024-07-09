@@ -17,6 +17,12 @@ impl Idiom {
     }
 }
 
+impl From<&str> for Idiom {
+    fn from(v: &str) -> Self {
+        Self(vec![Part::from(v)])
+    }
+}
+
 impl From<String> for Idiom {
     fn from(v: String) -> Self {
         Self(vec![Part::from(v)])

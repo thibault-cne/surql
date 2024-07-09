@@ -1,4 +1,4 @@
-use surrealdb::sql::Idiom;
+use crate::idiom::Idiom;
 
 pub struct Order {
     pub order: Idiom,
@@ -40,7 +40,7 @@ impl Order {
 impl From<Order> for surrealdb::sql::Order {
     fn from(value: Order) -> Self {
         Self {
-            order: value.order,
+            order: value.order.into(),
             random: value.random,
             collate: value.collate,
             numeric: value.numeric,

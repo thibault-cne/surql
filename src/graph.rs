@@ -1,6 +1,8 @@
 use surrealdb::sql::{
-    Cond, Dir, Field, Fields, Groups, Idiom, Limit, Orders, Splits, Start, Table, Tables,
+    Cond, Dir, Field, Fields, Groups, Limit, Orders, Splits, Start, Table, Tables,
 };
+
+use crate::idiom::Idiom;
 
 #[derive(Clone, Debug, Default)]
 pub struct Graph {
@@ -75,7 +77,7 @@ impl From<Graph> for surrealdb::sql::Graph {
             order: value.order,
             limit: value.limit,
             start: value.start,
-            alias: value.alias,
+            alias: value.alias.map(Into::into),
         }
     }
 }
