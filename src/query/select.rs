@@ -1,10 +1,12 @@
 use surrealdb::{
     opt::IntoQuery,
     sql::{
-        Cond, Fetch, Fetchs, Field, Fields, Group, Groups, Idiom, Idioms, Limit, Order, Orders,
-        Start, Subquery, Value, Values,
+        Cond, Fetch, Fetchs, Field, Fields, Group, Groups, Idioms, Limit, Order, Orders, Start,
+        Subquery, Value, Values,
     },
 };
+
+use crate::idiom::Idiom;
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct SelectStatement {
@@ -58,7 +60,7 @@ impl SelectStatement {
     {
         self.expr.0.push(Field::Single {
             expr: expr.into(),
-            alias: Some(alias.into()),
+            alias: Some(alias.into().into()),
         });
         self
     }
