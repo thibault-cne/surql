@@ -1,3 +1,4 @@
+use surrealdb::syn::idiom;
 use surrealdb::{
     opt::IntoQuery,
     sql::{
@@ -6,6 +7,7 @@ use surrealdb::{
     },
 };
 
+use crate::error::Result;
 use crate::idiom::Idiom;
 
 #[derive(Default, Debug, Clone, PartialEq)]
@@ -42,15 +44,17 @@ impl SelectStatement {
     }
 
     /// Add an expression to the select expression list.
-    pub fn expr<T>(&mut self, expr: T) -> &mut Self
+    pub fn expr<'a, T>(&mut self, expr: T) -> Result<&mut Self>
     where
-        T: Into<Value>,
+        T: Into<&'a str>,
     {
+        let idiom = idiom(expr.into())?;
+
         self.expr.0.push(Field::Single {
-            expr: expr.into(),
+            expr: idiom.into(),
             alias: None,
         });
-        self
+        Ok(self)
     }
 
     pub fn expr_as<T, U>(&mut self, expr: T, alias: U) -> &mut Self
@@ -209,7 +213,7 @@ impl From<SelectStatement> for surrealdb::sql::Statement {
 impl TryFrom<Subquery> for SelectStatement {
     type Error = crate::error::Error;
 
-    fn try_from(value: Subquery) -> Result<Self, Self::Error> {
+    fn try_from(value: Subquery) -> std::result::Result<Self, Self::Error> {
         match value {
             Subquery::Select(select) => Ok(select.into()),
             _ => Err(crate::error::ErrorKind::InvalidSubqueryType.into()),
@@ -223,10 +227,10 @@ mod tests {
     use crate::expression::Expression;
 
     #[test]
-    fn simple_query() {
+    fn simple_query() -> crate::error::Result<()> {
         let query: surrealdb::sql::statements::SelectStatement = SelectStatement::new()
-            .expr("name")
-            .expr("age")
+            .expr("name")?
+            .expr("age")?
             .what("users")
             .to_owned()
             .into();
@@ -235,13 +239,15 @@ mod tests {
             query.to_string(),
             "SELECT 'name', 'age' FROM 'users'".to_string()
         );
+
+        Ok(())
     }
 
     #[test]
-    fn where_clause() {
+    fn where_clause() -> crate::error::Result<()> {
         let query: surrealdb::sql::statements::SelectStatement = SelectStatement::new()
-            .expr("name")
-            .expr("age")
+            .expr("name")?
+            .expr("age")?
             .what("users")
             .cond(Expression::eq("name", "toto"))
             .cond(Expression::eq("age", 18))
@@ -252,5 +258,7 @@ mod tests {
             query.to_string(),
             "SELECT 'name', 'age' FROM 'users' WHERE 'name' = 'toto' AND 'age' = 18".to_string()
         );
+
+        Ok(())
     }
 }
