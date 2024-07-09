@@ -1,4 +1,4 @@
-use surrealdb::sql::{Function, Value};
+use surrealdb::sql::{Function, Statement, Value};
 
 pub struct Count {
     param: Option<Value>,
@@ -27,5 +27,11 @@ impl From<Count> for Function {
 impl From<Count> for Value {
     fn from(value: Count) -> Self {
         Function::from(value).into()
+    }
+}
+
+impl From<Count> for Statement {
+    fn from(value: Count) -> Self {
+        Statement::Value(value.into())
     }
 }
