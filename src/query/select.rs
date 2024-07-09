@@ -2,7 +2,7 @@ use surrealdb::{
     opt::IntoQuery,
     sql::{
         Cond, Fetch, Fetchs, Field, Fields, Group, Groups, Idiom, Idioms, Limit, Order, Orders,
-        Start, Value, Values,
+        Start, Subquery, Value, Values,
     },
 };
 
@@ -152,6 +152,10 @@ impl SelectStatement {
         }
         self
     }
+
+    pub fn into_subquery(self) -> Subquery {
+        Subquery::Select(surrealdb::sql::statements::SelectStatement::from(self))
+    }
 }
 
 impl IntoQuery for SelectStatement {
@@ -177,9 +181,37 @@ impl From<SelectStatement> for surrealdb::sql::statements::SelectStatement {
     }
 }
 
+impl From<surrealdb::sql::statements::SelectStatement> for SelectStatement {
+    fn from(value: surrealdb::sql::statements::SelectStatement) -> Self {
+        Self {
+            value: false,
+            expr: value.expr,
+            omits: value.omit,
+            what: value.what,
+            cond: value.cond,
+            group: value.group,
+            order: value.order,
+            limit: value.limit,
+            fetch: value.fetch,
+            start: value.start,
+        }
+    }
+}
+
 impl From<SelectStatement> for surrealdb::sql::Statement {
     fn from(value: SelectStatement) -> Self {
         surrealdb::sql::Statement::Select(value.into())
+    }
+}
+
+impl TryFrom<Subquery> for SelectStatement {
+    type Error = crate::error::Error;
+
+    fn try_from(value: Subquery) -> Result<Self, Self::Error> {
+        match value {
+            Subquery::Select(select) => Ok(select.into()),
+            _ => Err(crate::error::ErrorKind::InvalidSubqueryType.into()),
+        }
     }
 }
 
