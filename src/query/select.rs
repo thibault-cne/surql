@@ -15,7 +15,7 @@ pub struct SelectStatement {
     // list of fields to select
     pub(crate) expr: Fields,
     // list of fields to omit
-    pub(crate) omits: Option<Idioms>,
+    pub(crate) omit: Option<Idioms>,
     // list of values to select from
     pub(crate) what: Values,
     // list of conditions to apply
@@ -170,7 +170,7 @@ impl From<SelectStatement> for surrealdb::sql::statements::SelectStatement {
     fn from(value: SelectStatement) -> Self {
         Self {
             expr: value.expr,
-            omit: value.omits,
+            omit: value.omit,
             what: value.what,
             cond: value.cond,
             group: value.group,
@@ -188,7 +188,7 @@ impl From<surrealdb::sql::statements::SelectStatement> for SelectStatement {
         Self {
             value: false,
             expr: value.expr,
-            omits: value.omit,
+            omit: value.omit,
             what: value.what,
             cond: value.cond,
             group: value.group,
@@ -214,6 +214,36 @@ impl TryFrom<Subquery> for SelectStatement {
             Subquery::Select(select) => Ok(select.into()),
             _ => Err(crate::error::ErrorKind::InvalidSubqueryType.into()),
         }
+    }
+}
+
+impl std::fmt::Display for SelectStatement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "SELECT {}", self.expr)?;
+        if let Some(ref v) = self.omit {
+            write!(f, " OMIT {v}")?
+        }
+        write!(f, " FROM")?;
+        write!(f, " {}", self.what)?;
+        if let Some(ref v) = self.cond {
+            write!(f, " {v}")?
+        }
+        if let Some(ref v) = self.group {
+            write!(f, " {v}")?
+        }
+        if let Some(ref v) = self.order {
+            write!(f, " {v}")?
+        }
+        if let Some(ref v) = self.limit {
+            write!(f, " {v}")?
+        }
+        if let Some(ref v) = self.start {
+            write!(f, " {v}")?
+        }
+        if let Some(ref v) = self.fetch {
+            write!(f, " {v}")?
+        }
+        Ok(())
     }
 }
 
