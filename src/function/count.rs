@@ -1,7 +1,13 @@
 use surrealdb::sql::{Function, Value};
 
 pub struct Count {
-    pub param: Option<Value>,
+    param: Option<Value>,
+}
+
+impl Count {
+    pub fn new(param: Option<Value>) -> Self {
+        Self { param }
+    }
 }
 
 impl From<Count> for Function {
