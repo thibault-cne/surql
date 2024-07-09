@@ -88,9 +88,9 @@ impl SelectStatement {
 
     pub fn limit<T>(&mut self, limit: T) -> &mut Self
     where
-        T: Into<Limit>,
+        T: Into<Value>,
     {
-        self.limit = Some(limit.into());
+        self.limit = Some(Limit(limit.into()));
         self
     }
 
@@ -136,9 +136,9 @@ impl SelectStatement {
 
     pub fn start<T>(&mut self, start: T) -> &mut Self
     where
-        T: Into<Start>,
+        T: Into<Value>,
     {
-        self.start = Some(start.into());
+        self.start = Some(Start(start.into()));
         self
     }
 
