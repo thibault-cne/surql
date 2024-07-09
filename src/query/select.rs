@@ -10,8 +10,6 @@ use crate::idiom::Idiom;
 
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct SelectStatement {
-    // `VALUE`keyword
-    pub(crate) value: bool,
     // list of fields to select
     pub(crate) expr: Fields,
     // list of fields to omit
@@ -74,9 +72,9 @@ impl SelectStatement {
         self
     }
 
-    /// Select value
+    /// Toggle the `VALUE` keyword.
     pub fn value(&mut self) -> &mut Self {
-        self.value = true;
+        self.expr.1 = !self.expr.1;
         self
     }
 
@@ -183,37 +181,9 @@ impl From<SelectStatement> for surrealdb::sql::statements::SelectStatement {
     }
 }
 
-impl From<surrealdb::sql::statements::SelectStatement> for SelectStatement {
-    fn from(value: surrealdb::sql::statements::SelectStatement) -> Self {
-        Self {
-            value: false,
-            expr: value.expr,
-            omit: value.omit,
-            what: value.what,
-            cond: value.cond,
-            group: value.group,
-            order: value.order,
-            limit: value.limit,
-            fetch: value.fetch,
-            start: value.start,
-        }
-    }
-}
-
 impl From<SelectStatement> for surrealdb::sql::Statement {
     fn from(value: SelectStatement) -> Self {
         surrealdb::sql::Statement::Select(value.into())
-    }
-}
-
-impl TryFrom<Subquery> for SelectStatement {
-    type Error = crate::error::Error;
-
-    fn try_from(value: Subquery) -> std::result::Result<Self, Self::Error> {
-        match value {
-            Subquery::Select(select) => Ok(select.into()),
-            _ => Err(crate::error::ErrorKind::InvalidSubqueryType.into()),
-        }
     }
 }
 
