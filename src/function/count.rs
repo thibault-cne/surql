@@ -5,8 +5,13 @@ pub struct Count {
 }
 
 impl Count {
-    pub fn new(param: Option<Value>) -> Self {
-        Self { param }
+    pub fn new<V>(param: Option<V>) -> Self
+    where
+        V: Into<Value>,
+    {
+        Self {
+            param: param.map(|v| v.into()),
+        }
     }
 }
 
