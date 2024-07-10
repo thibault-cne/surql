@@ -1,4 +1,7 @@
-use surrealdb::sql::{Function, Statement, Value};
+use surrealdb::{
+    opt::IntoQuery,
+    sql::{Function, Statement, Value},
+};
 
 pub struct Count {
     param: Option<Value>,
@@ -12,6 +15,12 @@ impl Count {
         Self {
             param: param.map(|v| v.into()),
         }
+    }
+}
+
+impl IntoQuery for Count {
+    fn into_query(self) -> surrealdb::Result<Vec<surrealdb::sql::Statement>> {
+        Ok(vec![self.into()])
     }
 }
 
